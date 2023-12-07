@@ -15,10 +15,15 @@ function pwReg(text) {
   return re.test(String(text).toLowerCase());
 }
 const checkInput = (inputElement, isValid, userProperty) => {
-  if (!isValid || inputElement.value !== user[userProperty]) {
+  if (!isValid) {
     inputElement.classList.add('is--invalid');
     return false;
   } else {
+    if (inputElement.value !== user[userProperty]) {
+      const wrong = userProperty == 'id' ? '아이디' : '비밀번호';
+      alert(`${wrong}를 다시 입력해주세요.`);
+      return false;
+    }
     inputElement.classList.remove('is--invalid');
     return true;
   }
