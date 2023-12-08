@@ -24,17 +24,14 @@
 const checkInput = (inputElement, validationFunc, userProperty) => {
   if (!validationFunc(inputElement.value)) {
     inputElement.classList.add('is--invalid');
-    console.log('1', 1);
     return false;
   } else {
     if (inputElement.value !== user[userProperty]) {
       const wrong = userProperty == 'id' ? '아이디' : '비밀번호';
       alert(`${wrong}를 다시 입력해주세요.`);
-      console.log('2', 2);
       return false;
     }
     inputElement.classList.remove('is--invalid');
-    console.log('3', 3);
     return true;
   }
 };
