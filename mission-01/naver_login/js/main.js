@@ -1,15 +1,19 @@
-const userEmailInput = document.querySelector('.user-email-input');
-const userPwInput = document.querySelector('.user-password-input');
+const emailInput = document.querySelector('.user-email-input');
+const pwInput = document.querySelector('.user-password-input');
+const loginButton = document.querySelector('.btn-login');
 
 const user = {
   id: 'asd@naver.com',
   pw: 'spdlqj123!@',
 };
+let isValid = {
+  email: false,
+  pw: false,
+};
 
 function emailReg(text) {
   const re =
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
   return re.test(String(text).toLowerCase());
 }
 
@@ -17,36 +21,42 @@ function pwReg(text) {
   const re = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^*+=-]).{6,16}$/;
   return re.test(String(text).toLowerCase());
 }
+
 /**
- * 사용자 입력의 유효성 확인
- * @param {HTMLElement} inputElement - 유효성 검사할 입력 요소
- * @param {Function} validationFunction - 입력 값에 대한 유효성 확인 함수
- * @param {string} userProperty - 입력과 비교할 user 객체의 속성
- * @returns {boolean} - 입력이 유효하고 속성과 일치하면 true, 그렇지 않으면 false 반환
+ * 입력 요소의 유효성 검사 함수
+ * @param {function} validationFunction - 유효성 검사 함수
+ * @param {HTMLInputElement} element - 유효성 검사할 입력 요소
+ * @param {string} validationType - 유효성 검사 유형
  */
-const checkInput = (inputElement, validationFunc, userProperty) => {
-  if (!validationFunc(inputElement.value)) {
-    inputElement.classList.add('is--invalid');
-    return false;
+const inputValidate = (validationFunction, element, validationType) => {
+  if (validationFunction(element.value)) {
+    element.classList.remove('is--invalid');
+    isValid[validationType] = true;
   } else {
-    if (inputElement.value !== user[userProperty]) {
-      const wrong = userProperty == 'id' ? '아이디' : '비밀번호';
-      alert(`${wrong}를 다시 입력해주세요.`);
-      return false;
-    }
-    inputElement.classList.remove('is--invalid');
-    return true;
+    element.classList.add('is--invalid');
+    isValid[validationType] = false;
   }
 };
 
-// 이메일 입력의 유효성 확인 함수
-const checkEmail = () => checkInput(userEmailInput, emailReg, 'id');
+// 이메일 입력 요소 유효성 검사
+const emailValidate = () => inputValidate(emailReg, emailInput, 'email');
 
-// 비밀번호 입력의 유효성 확인 함수
-const checkPw = () => checkInput(userPwInput, pwReg, 'pw');
+// 비밀번호 입력 요소 유효성 검사
+const pwValidate = () => inputValidate(pwReg, pwInput, 'pw');
 
-// 로그인 버튼에 대한 이벤트 리스너
-document.querySelector('.btn-login').addEventListener('click', (e) => {
+emailInput.addEventListener('input', emailValidate);
+pwInput.addEventListener('input', pwValidate);
+
+// 로그인 버튼 클릭 이벤트의 이벤트 핸들러
+loginButton.addEventListener('click', (e) => {
   e.preventDefault();
-  if (checkEmail() && checkPw()) window.location.href = './welcome.html';
+  if (!(isValid.email && isValid.pw)) return;
+
+  // if (isValid.email && isValid.pw) {
+  if (user.id === emailInput.value && user.pw === pwInput.value) {
+    location.href = 'welcome.html';
+  } else {
+    alert('입력한 정보가 올바르지 않습니다. 다시 시도해주세요.');
+  }
+  // }
 });
