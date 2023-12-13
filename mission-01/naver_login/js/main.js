@@ -52,11 +52,9 @@ loginButton.addEventListener('click', (e) => {
   e.preventDefault();
   if (!(isValid.email && isValid.pw)) return;
 
-  // if (isValid.email && isValid.pw) {
   if (user.id === emailInput.value && user.pw === pwInput.value) {
     location.href = 'welcome.html';
   } else {
     alert('입력한 정보가 올바르지 않습니다. 다시 시도해주세요.');
   }
-  // }
 });

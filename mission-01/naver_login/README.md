@@ -71,13 +71,15 @@ pwInput.addEventListener('input', pwValidate);
 → 수정사항: 기존에는 이메일의 유효성 검사와 유저 확인, 비밀번호의 유호성 검사와 유저 확인을 각각의 함수로 만들었지만, 상태를 저장하는 `isValid` 객체를 만들고 난 후, 유효성 검사와 유저 확인을 각각의 함수로 만들었다.
 
 ```jsx
-// 로그인 버튼에 대한 이벤트 리스너
-document.querySelector('.btn-login').addEventListener('click', (e) => {
+// 로그인 버튼 클릭 이벤트의 이벤트 핸들러
+loginButton.addEventListener('click', (e) => {
   e.preventDefault();
-  if (checkEmail() && checkPw()) {
-    window.location.href = './welcome.html';
+  if (!(isValid.email && isValid.pw)) return;
+
+  if (user.id === emailInput.value && user.pw === pwInput.value) {
+    location.href = 'welcome.html';
   } else {
-    return false;
+    alert('입력한 정보가 올바르지 않습니다. 다시 시도해주세요.');
   }
 });
 ```
