@@ -10,59 +10,86 @@
 | <img src='./assets/readme-img/wrong-form.gif' /> | <img src='./assets/readme-img/wrong-user.gif' /> | <img src="./assets/readme-img/success.gif" /> |
 
 <br />
-
 ### 📝 Description
 
 ```jsx
+const emailInput = document.querySelector('.user-email-input');
+const pwInput = document.querySelector('.user-password-input');
+const loginButton = document.querySelector('.btn-login');
+
+let isValid = {
+  email: false,
+  pw: false,
+};
+```
+
+→ 수정사항: `isValid` 객체는 상태 저장을 위해 추가했다.
+
+```jsx
 /**
- * 사용자 입력의 유효성 확인
- * @param {HTMLElement} inputElement - 유효성 검사할 입력 요소
- * @param {Function} validationFunction - 입력 값에 대한 유효성 확인 함수
- * @param {string} userProperty - 입력과 비교할 user 객체의 속성
- * @returns {boolean} - 입력이 유효하고 속성과 일치하면 true, 그렇지 않으면 false 반환
+ * 입력 요소의 유효성 검사 함수
+ * @param {function} validationFunction - 유효성 검사 함수
+ * @param {HTMLInputElement} element - 유효성 검사할 입력 요소
+ * @param {string} validationType - 유효성 검사 유형
  */
-const checkInput = (inputElement, validationFunc, userProperty) => {
-  if (!validationFunc(inputElement.value)) {
-    inputElement.classList.add('is--invalid');
-    return false;
+const inputValidate = (validationFunction, element, validationType) => {
+  if (validationFunction(element.value)) {
+    element.classList.remove('is--invalid');
+    isValid[validationType] = true;
   } else {
-    if (inputElement.value !== user[userProperty]) {
-      const wrong = userProperty == 'id' ? '아이디' : '비밀번호';
-      alert(`${wrong}를 다시 입력해주세요.`);
-      return false;
-    }
-    inputElement.classList.remove('is--invalid');
-    return true;
+    element.classList.add('is--invalid');
+    isValid[validationType] = false;
   }
 };
 ```
 
-- 이메일과 비밀번호의 유효성을 확인하는 함수를 각각 만들었는데 대부분 비슷한 내용이라 `checkInput()`을 새로 만들었다.
+이메일과 비밀번호의 유효성을 확인하는 함수를 각각 만들었는데 대부분 비슷한 내용이라 `inputValidate()`을 새로 만들었다.
 
-- `checkInput()`은 `<input>`, 유효성 검사 함수, 비교할 user의 속성을 받고, 입력이 유효하고 user의 속성과 일치하면 `true`, 그렇지 않으면 `false`를 반환한다.
+inputValidate()은 유효성 검사 함수, 유효성 검사할 `<input>` 요소, 유효성 검사 유형(email, pw)을 받는다.
 
-- 유효성 확인과 다르게 아이디와 비밀번호가 다를 경우 나타나야 하는 콘텐츠가 없기 때문에 `alert()`으로 나타냈다.<br />
-  <br />
+입력이 유효하다면 `<input> 태그의 is--valid 클래스를 삭제하`고, `isValid`에 `true`를 저장한다.
+
+반대로 유효하지 않다면 `<input>`태그에 `is—valid` 클래스를 추가하고, `isValid`에 `false`를 저장한다.
 
 ```jsx
-// 이메일 입력의 유효성 확인 함수
-const checkEmail = () => checkInput(userEmailInput, emailReg, 'id');
+// 이메일 입력 요소 유효성 검사
+const emailValidate = () => inputValidate(emailReg, emailInput, 'email');
 
-// 비밀번호 입력의 유효성 확인 함수
-const checkPw = () => checkInput(userPwInput, pwReg, 'pw');
+// 비밀번호 입력 요소 유효성 검사
+const pwValidate = () => inputValidate(pwReg, pwInput, 'pw');
 ```
 
-- `checkEmail()`, `checkPw()` 모두 `checkInput()`을 리턴한다.<br />
-  <br />
+`emailValidate()`, `pwValidate()` 모두 `inputValidate()`을 리턴한다.
+
+```jsx
+emailInput.addEventListener('input', emailValidate);
+pwInput.addEventListener('input', pwValidate);
+```
+
+이메일과 비밀번호를 입력하는 `<input>`태그에 사용자가 입력을 할 때마다 이벤트가 발생하도록 했다.
+
+→ 수정사항: 기존에는 이메일의 유효성 검사와 유저 확인, 비밀번호의 유호성 검사와 유저 확인을 각각의 함수로 만들었지만, 상태를 저장하는 `isValid` 객체를 만들고 난 후, 유효성 검사와 유저 확인을 각각의 함수로 만들었다.
 
 ```jsx
 // 로그인 버튼에 대한 이벤트 리스너
 document.querySelector('.btn-login').addEventListener('click', (e) => {
   e.preventDefault();
-  if (checkEmail() && checkPw()) window.location.href = './welcome.html';
+  if (checkEmail() && checkPw()) {
+    window.location.href = './welcome.html';
+  } else {
+    return false;
+  }
 });
 ```
 
-- 로그인 버튼 클릭 시 양식을 바로 제출한다. 이를 막기 위해 `e.preventDefault()`를 사용했다.
-  <span style="color:gray;">→ `event.preventDefault()`: HTML에서 표준으로 제공하는 기본 이벤트를 막는다.</span>
-- 이메일과 비밀번호가 모두 일치하다면 welcome.html로 이동한다.
+로그인 버튼 클릭 시 양식을 바로 제출한다. 이를 막기 위해 `e.preventDefault()`를 사용했다.
+
+→ `event.preventDefault()`: HTML에서 표준으로 제공하는 기본 이벤트를 막는다.
+
+이메일과 비밀번호가 유효성 검사에 통과하고, 지정한 사용자라면 welcome.html로, 아니라면 `alert()`이 보이게 했다.
+
+### 📌 feedback
+
+- 강사님: 유효성 검사부터 README작성까지 너무 잘해주셔서 놀랐습니다~ㅎㅎ 거기에 JSDoc까지 작성해주시고 👍 상태변수 관리만 넣어주시면 좋을 것 같아요
+- 회고조: 해커의 공격 시도 시 사용자의 계정 노출이 더 많을 수 있기 때문에 이메일/비밀번호 등을 언급하지 않고 포괄적인 표현이 더 좋을 것 같다.
+- 개인적: 회고조 사람들의 코드를 봤을 때, 코드를 작성하는데 불편하지는 않았지만 변수가 너무 적은 게 아닌가 싶었다. 가독성이 좋지 않은 코드인가? 고민을 했었고, 아직도 가독성에 좋은지는 잘 모르겠다. 그리고 변수명 지정이 힘들었던 것 같다.
