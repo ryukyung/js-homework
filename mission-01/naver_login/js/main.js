@@ -44,11 +44,7 @@ const emailValidate = () => inputValidate(emailReg, emailInput, 'email');
 // 비밀번호 입력 요소 유효성 검사
 const pwValidate = () => inputValidate(pwReg, pwInput, 'pw');
 
-emailInput.addEventListener('input', emailValidate);
-pwInput.addEventListener('input', pwValidate);
-
-// 로그인 버튼 클릭 이벤트의 이벤트 핸들러
-loginButton.addEventListener('click', (e) => {
+const clickLoginButton = (e) => {
   e.preventDefault();
   if (!(isValid.email && isValid.pw)) return;
 
@@ -57,4 +53,9 @@ loginButton.addEventListener('click', (e) => {
   } else {
     alert('입력한 정보가 올바르지 않습니다. 다시 시도해주세요.');
   }
-});
+};
+
+// 이벤트 핸들러
+emailInput.addEventListener('input', emailValidate);
+pwInput.addEventListener('input', pwValidate);
+loginButton.addEventListener('click', clickLoginButton);
