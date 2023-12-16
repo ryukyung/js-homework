@@ -59,13 +59,14 @@ const handlePoster = (target) => {
 ```jsx
 // body의 배경 설정
 const setBgColor = (poster) => {
-  const colorList = poster.color;
+  const [colorA, colorB = '#000'] = poster.color;
   const body = document.querySelector('body');
-  body.style.background = `linear-gradient(to bottom, ${colorList[0]},${colorList[1]})`;
+  body.style.background = `linear-gradient(to bottom, ${colorA},${colorB})`;
 };
 ```
 
 - 포스터의 색상 배열을 가져와서 배경을 변경한다.
+- 만약 `colorB`가 없다면 검정색을 디폴트로 넣어준다.
 
 ```jsx
 // 썸네일 이미지와 대체 텍스트 설정

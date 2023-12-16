@@ -4,9 +4,9 @@ const navigation = document.querySelector('nav ul');
 
 // body의 배경 설정
 const setBgColor = (poster) => {
-  const colorList = poster.color;
+  const [colorA, colorB = '#000'] = poster.color;
   const body = document.querySelector('body');
-  body.style.background = `linear-gradient(to bottom, ${colorList[0]},${colorList[1]})`;
+  body.style.background = `linear-gradient(to bottom, ${colorA},${colorB})`;
 };
 
 // 썸네일 이미지와 대체 텍스트 설정
