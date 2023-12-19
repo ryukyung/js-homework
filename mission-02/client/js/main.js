@@ -1,7 +1,8 @@
 import dataList from './data.js';
+import AudioPlayer from './audio.js';
 
 const navigation = document.querySelector('nav ul');
-
+let audio;
 // target의 type이 문자열인지, DOM 요소인지 확인하는 함수
 const isString = (target) =>
   typeof target === 'string' ? document.querySelector(target) : target;
@@ -26,7 +27,8 @@ const setNameText = (target, poster) => {
 
 // 오디오 재생
 const setAudio = (poster) => {
-  const audio = new Audio(`./assets/audio/${poster.name.toLowerCase()}.m4a`);
+  if (audio && audio.isPlaying()) audio.stop();
+  audio = new AudioPlayer(`./assets/audio/${poster.name.toLowerCase()}.m4a`);
   audio.play();
 };
 
